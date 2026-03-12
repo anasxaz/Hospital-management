@@ -1,25 +1,23 @@
 package com.example;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
-import java.time.LocalDate;
-import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @SpringBootApplication
 @Controller
@@ -110,9 +108,9 @@ public String clearBill(@RequestParam int patientIndex, Model model) {
     if (patientIndex >= 0 && patientIndex < patients.size()) {
         Patient patient = patients.get(patientIndex);
         patient.clearBill();
-        model.addAttribute("message", "Bill cleared successfully for " + patient.getName());
+        model.addAttribute(MESSAGE_ATTRIBUTE, "Bill cleared successfully for " + patient.getName());
     } else {
-        model.addAttribute("error", "Invalid patient selected");
+        model.addAttribute(ERROR_ATTRIBUTE, "Invalid patient selected");
     }
     return "redirect:/billing";
 }
@@ -149,7 +147,7 @@ public String clearBill(@RequestParam int patientIndex, Model model) {
     @GetMapping("/")
     public String index(HttpSession session, Model model) {
         if (isAuthenticated(session)) {
-            model.addAttribute("message", "Welcome to the Hospital Management System");
+            model.addAttribute(MESSAGE_ATTRIBUTE, "Welcome to the Hospital Management System");
             return "index";
         } else {
             return "redirect:/login";
@@ -209,7 +207,7 @@ public String clearBill(@RequestParam int patientIndex, Model model) {
             patients.get(patientIndex).addToBill(100); // Add appointment charge to the bill
             return "redirect:/appointments";
         } else {
-            model.addAttribute("error", "This appointment slot is already booked. Please choose another.");
+            model.addAttribute(ERROR_ATTRIBUTE, "This appointment slot is already booked. Please choose another.");
             model.addAttribute("appointments", appointments);
             model.addAttribute("patients", patients);
             model.addAttribute("doctors", doctors);
@@ -249,7 +247,7 @@ public String clearBill(@RequestParam int patientIndex, Model model) {
             patient.addToBill(1000); // Add bed charge to the bill
             return "redirect:/beds";
         } else {
-            model.addAttribute("error", "This bed is already occupied. Please choose another.");
+            model.addAttribute(ERROR_ATTRIBUTE, "This bed is already occupied. Please choose another.");
             model.addAttribute("beds", beds);
             model.addAttribute("patients", patients);
             return "beds";
